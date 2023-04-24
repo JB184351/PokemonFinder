@@ -78,10 +78,9 @@ class PokemonTableViewCell: UITableViewCell {
     
     func configure(with pokemon: PKMPokemon) {
         nameLabel.text = pokemon.name?.capitalized
-        if let pokemonNumber = pokemon.id {
-            pokemonNumberLabel.text = "#\(pokemonNumber)"
+        if let pokemonEntryNumber = pokemon.id {
+            pokemonNumberLabel.text = "#\(pokemonEntryNumber)"
         }
-        pokemonImageView.image = UIImage(named: "pokeball")
         
         if let spriteURL = URL(string: pokemon.sprites?.frontDefault ?? "nada") {
             Task {
