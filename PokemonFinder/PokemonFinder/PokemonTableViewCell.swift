@@ -8,6 +8,10 @@
 import UIKit
 import PokemonAPI
 
+enum ImageError: Error {
+    case failedToLoad
+}
+
 class PokemonTableViewCell: UITableViewCell {
     
     let nameLabel: UILabel = {
@@ -62,6 +66,15 @@ class PokemonTableViewCell: UITableViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+
+    func loadImage(url: URL) async throws -> UIImage {
+        let (data, _) = try await URLSession.shared.data(from: url)
+        guard let image = UIImage(data: data) else {
+            throw ImageError.failedToLoad
+        }
+        return image
+    }
+
     
     func configure(with pokemon: PKMPokemon) {
         nameLabel.text = pokemon.name?.capitalized
@@ -70,18 +83,15 @@ class PokemonTableViewCell: UITableViewCell {
         }
         pokemonImageView.image = UIImage(named: "pokeball")
         
-        // TODO: Move the image loading logic else where and use async/await
         if let spriteURL = URL(string: pokemon.sprites?.frontDefault ?? "nada") {
-            URLSession.shared.dataTask(with: spriteURL) { data, response, error in
-                guard let data = data else {
-                    print(error?.localizedDescription)
-                    return
+            Task {
+                do {
+                    let spriteImage = try await loadImage(url: spriteURL)
+                    pokemonImageView.image = spriteImage
+                } catch {
+                    print(error.localizedDescription)
                 }
-                
-                DispatchQueue.main.async {
-                    self.pokemonImageView.image = UIImage(data: data)
-                }
-            }.resume()
+            }
         }
     }
 }
