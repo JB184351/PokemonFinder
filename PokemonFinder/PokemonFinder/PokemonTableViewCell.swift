@@ -17,7 +17,17 @@ class PokemonTableViewCell: UITableViewCell {
     let nameLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 20, weight: .semibold)
-        label.textColor = .black
+        label.textColor = .label
+        
+        label.textColor = UIColor { (traitCollection: UITraitCollection) -> UIColor in
+            switch traitCollection.userInterfaceStyle {
+            case .dark:
+                return .white // the text color in dark mode
+            default:
+                return .black // the text color in light mode
+            }
+        }
+        
         return label
     }()
     
