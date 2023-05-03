@@ -58,6 +58,7 @@ class PokemonViewController: UIViewController {
 }
 
 extension PokemonViewController: UITableViewDataSource {
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return pokemon.count
     }
@@ -75,6 +76,13 @@ extension PokemonViewController: UITableViewDataSource {
 }
 
 extension PokemonViewController: UITableViewDelegate {
-
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let pokeman = pokemon[indexPath.row]
+        
+        Task {
+            try await pokemonViewModel.fetchPokemonLocations(pokemon: pokeman)
+        }
+    }
 }
 
