@@ -12,8 +12,8 @@ class PokemonViewController: UIViewController {
     
     let pokemonViewModel = PokemonViewModel()
     var tableView = UITableView()
-    
     var pokemon = [PKMPokemon]()
+    var pokemonLocations = [String]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -81,7 +81,11 @@ extension PokemonViewController: UITableViewDelegate {
         let pokeman = pokemon[indexPath.row]
         
         Task {
-            try await pokemonViewModel.fetchPokemonLocations(pokemon: pokeman)
+            try await pokemonLocations = pokemonViewModel.fetchPokemonLocations(pokemon: pokeman)
+        }
+        
+        for location in pokemonLocations {
+            print(location)
         }
     }
 }

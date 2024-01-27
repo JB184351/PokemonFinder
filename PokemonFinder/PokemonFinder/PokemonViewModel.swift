@@ -40,7 +40,9 @@ class PokemonViewModel {
         }
     }
     
-    public func fetchPokemonLocations(pokemon: PKMPokemon) async throws {
+    public func fetchPokemonLocations(pokemon: PKMPokemon) async throws -> [String] {
+        var locationNames = [String]()
+        
         do {
             if let locationURLString = pokemon.locationAreaEncounters, let locationURL = URL(string: locationURLString) {
                 let data = try await URLSession.shared.data(from: locationURL)
@@ -48,12 +50,16 @@ class PokemonViewModel {
                 let locationAreaEncounters = try JSONDecoder().decode([PKMLocationAreaEncounter].self, from: data.0)
 
                 for locationAreaEncounter in locationAreaEncounters {
-                    
+                    if let locationAreaName = locationAreaEncounter.locationArea?.name {
+                        locationNames.append(locationAreaName)
+                    }
                 }
             }
         } catch {
             print(error.localizedDescription)
         }
+        
+        return locationNames
     }
     
     public func numberOfPokemon() -> Int {
